@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>p5.js Graphics Demo - IMDM127</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #16213e;
+            padding: 15px 20px;
+            border-bottom: 2px solid #0f3460;
+        }
+
+        h1 {
+            font-size: 1.4em;
+            font-weight: 500;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: #1a1a2e;
+        }
+
+        .editor-panel h2 {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        #code-editor {
+            flex: 1;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #0d0d1a;
+            color: #e0e0e0;
+            resize: none;
+            tab-size: 2;
+        }
+
+        #code-editor:focus {
+            outline: 2px solid #0f3460;
+        }
+
+        .button-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #update-btn {
+            padding: 15px 25px;
+            font-size: 14px;
+            font-weight: 600;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #update-btn:hover:not(:disabled) {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        #update-btn:disabled {
+            background: #555;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .canvas-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: #1a1a2e;
+        }
+
+        .canvas-panel h2 {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        #canvas-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0d0d1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #canvas-container canvas {
+            border-radius: 4px;
+        }
+
+        #error-display {
+            color: #ff6b6b;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            margin-top: 10px;
+            background: #2a1a1a;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>p5.js Graphics Playground - IMDM127</h1>
+    </header>
+
+    <div class="container">
+        <div class="editor-panel">
+            <h2>Code Editor</h2>
+            <textarea id="code-editor"></textarea>
+            <div id="error-display"></div>
+        </div>
+
+        <div class="button-panel">
+            <button id="update-btn" disabled>Update →</button>
+        </div>
+
+        <div class="canvas-panel">
+            <h2>Graphics Output</h2>
+            <div id="canvas-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample code that will be loaded into the editor
+        const sampleCode = `// Welcome to p5.js! This code draws graphics.
+// Try changing values and click "Update" to see what happens!
+
+// Set up the canvas size
+createCanvas(400, 400);
+
+// Fill the background with a light gray color
+// Try changing 240 to a number between 0 (black) and 255 (white)
+background(240);
+
+// ============ DRAWING LINES ============
+// stroke() sets the color for lines and outlines
+// Colors use RGB: (red, green, blue) from 0-255
+stroke(100, 100, 100);  // Gray color
+strokeWeight(2);        // Line thickness - try 1, 5, or 10!
+
+// line(x1, y1, x2, y2) draws from point 1 to point 2
+line(20, 20, 380, 20);   // Top border line
+line(20, 380, 380, 380); // Bottom border line
+
+// ============ DRAWING RECTANGLES ============
+// fill() sets the color for shapes
+// Try changing these numbers to get different colors!
+fill(70, 130, 180);     // Steel blue color
+stroke(0);              // Black outline
+strokeWeight(2);
+
+// rect(x, y, width, height) draws a rectangle
+// x,y is the top-left corner position
+rect(30, 50, 100, 80);  // Try changing 100 to make it wider!
+
+// A rectangle with no fill (just outline)
+noFill();               // This makes shapes transparent inside
+stroke(255, 100, 100);  // Reddish outline
+strokeWeight(3);
+rect(150, 50, 100, 80);
+
+// ============ DRAWING CIRCLES ============
+// circle(x, y, diameter) - x,y is the CENTER of the circle
+fill(255, 200, 100);    // Orange-yellow color
+stroke(200, 150, 50);   // Darker outline
+strokeWeight(2);
+
+circle(330, 90, 70);    // Try changing 70 to make it bigger!
+
+// A smaller circle with a different color
+fill(100, 200, 100);    // Green color
+circle(80, 200, 50);
+
+// ============ DRAWING ELLIPSES ============
+// ellipse(x, y, width, height) - for oval shapes
+fill(200, 100, 200);    // Purple color
+ellipse(200, 200, 120, 60);  // Wide oval
+
+// ============ DRAWING TEXT ============
+// textSize() sets how big the text is
+// textAlign() sets how text is positioned
+fill(30, 60, 100);      // Dark blue color
+noStroke();             // No outline on text looks cleaner
+textSize(28);
+textAlign(CENTER);      // Center the text horizontally
+
+// text("message", x, y) draws text at position x, y
+text("Welcome to IMDM127", 200, 300);
+
+// Smaller instructional text
+fill(100);              // Gray color
+textSize(14);
+text("Edit the code and click Update!", 200, 340);
+
+// ============ TRY THESE CHALLENGES ============
+// 1. Change the background color to light blue: background(200, 220, 255)
+// 2. Make the orange circle twice as big
+// 3. Change "Welcome to IMDM127" to your name
+// 4. Add a new circle somewhere on the canvas
+// 5. Try making a rectangle with rounded corners: rect(x, y, w, h, 20)
+`;
+
+        let p5Instance = null;
+        const codeEditor = document.getElementById('code-editor');
+        const updateBtn = document.getElementById('update-btn');
+        const errorDisplay = document.getElementById('error-display');
+        const canvasContainer = document.getElementById('canvas-container');
+
+        // Load sample code into editor
+        codeEditor.value = sampleCode;
+
+        // Handle tab key in textarea
+        codeEditor.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = codeEditor.selectionStart;
+                const end = codeEditor.selectionEnd;
+                codeEditor.value = codeEditor.value.substring(0, start) + '  ' + codeEditor.value.substring(end);
+                codeEditor.selectionStart = codeEditor.selectionEnd = start + 2;
+            }
+        });
+
+        // Enable button when code is edited
+        codeEditor.addEventListener('input', () => {
+            updateBtn.disabled = false;
+        });
+
+        // Run the code when Update is clicked
+        updateBtn.addEventListener('click', runCode);
+
+        // NOTE: This code playground intentionally executes user-written code.
+        // This is the core educational purpose - letting students write and run p5.js code.
+        // Similar to CodePen, JSFiddle, or the official p5.js web editor.
+        function runCode() {
+            // Clear any previous errors
+            errorDisplay.style.display = 'none';
+            errorDisplay.textContent = '';
+
+            // Remove existing p5 instance
+            if (p5Instance) {
+                p5Instance.remove();
+                p5Instance = null;
+            }
+
+            // Clear the container
+            canvasContainer.innerHTML = '';
+
+            const userCode = codeEditor.value;
+
+            try {
+                // Create a new p5 instance with the user's code
+                p5Instance = new p5((p) => {
+                    p.setup = function() {
+                        // Make p5 functions available in a simpler way
+                        const sketchFunctions = [
+                            'createCanvas', 'background', 'stroke', 'strokeWeight', 'noStroke',
+                            'fill', 'noFill', 'line', 'rect', 'ellipse', 'circle', 'triangle',
+                            'quad', 'arc', 'point', 'text', 'textSize', 'textAlign', 'textFont',
+                            'push', 'pop', 'translate', 'rotate', 'scale',
+                            'color', 'lerpColor', 'red', 'green', 'blue',
+                            'width', 'height', 'mouseX', 'mouseY',
+                            'CENTER', 'LEFT', 'RIGHT', 'TOP', 'BOTTOM', 'CORNER', 'CORNERS',
+                            'PI', 'TWO_PI', 'HALF_PI', 'QUARTER_PI',
+                            'random', 'noise', 'map', 'constrain',
+                            'sin', 'cos', 'tan', 'sqrt', 'pow', 'abs', 'floor', 'ceil', 'round'
+                        ];
+
+                        // Build the execution context with p5 functions available
+                        let funcBody = '';
+                        sketchFunctions.forEach(fn => {
+                            if (typeof p[fn] === 'function') {
+                                funcBody += `var ${fn} = p.${fn}.bind(p);\n`;
+                            } else if (p[fn] !== undefined) {
+                                funcBody += `var ${fn} = p.${fn};\n`;
+                            }
+                        });
+                        funcBody += userCode;
+
+                        // Execute the user's code (intentional - this is a code playground)
+                        const userFunc = new Function('p', funcBody);
+                        userFunc(p);
+                    };
+
+                    // Empty draw function since we're doing static graphics
+                    p.draw = function() {
+                        p.noLoop();
+                    };
+                }, canvasContainer);
+
+                // Disable the button after successful run
+                updateBtn.disabled = true;
+
+            } catch (error) {
+                errorDisplay.textContent = 'Error: ' + error.message;
+                errorDisplay.style.display = 'block';
+            }
+        }
+
+        // Run the code initially when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runCode, 100);
+        });
+    </script>
+</body>
+</html>
